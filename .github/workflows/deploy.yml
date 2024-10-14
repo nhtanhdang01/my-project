@@ -14,24 +14,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # Step 5: Authenticate to Google Cloud
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v0.4.0  # Use the latest version
+      with:
+        credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}  # Add your service account key in GitHub secrets
+
+    # Step 6: Set up Google Cloud SDK
+    - name: Set up Google Cloud SDK
+      run: |
+        echo "Setting up Google Cloud SDK"
+        echo ${{ secrets.GOOGLE_PROJECT_ID }} > project_id.txt
+        gcloud config set project $(cat project_id.txt)
+
     # Step 2: Set up Python
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3'  # Use the version you need
-        
-    - name: Install Google Cloud SDK
-      run: |
-        echo "Installing Google Cloud SDK"
-        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://apt.releases.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-        sudo apt-get update && sudo apt-get install google-cloud-sdk -y
-
-    - name: Set up Google Cloud SDK
-      run: |
-        echo "Setting up Google Cloud SDK"
-        echo *** > project_id.txt
-        gcloud config set project $(cat project_id.txt)
 
     # Step 3: Install dependencies
     - name: Install dependencies
@@ -46,19 +46,6 @@ jobs:
     - name: Run tests
       run: |
         pytest
-
-    # Step 5: Authenticate to Google Cloud
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v0.4.0  # Use the latest version
-      with:
-        credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}  # Add your service account key in GitHub secrets
-
-    # Step 6: Set up Google Cloud SDK
-    - name: Set up Google Cloud SDK
-      run: |
-        echo "Setting up Google Cloud SDK"
-        echo ${{ secrets.GOOGLE_PROJECT_ID }} > project_id.txt
-        gcloud config set project $(cat project_id.txt)
 
     # Step 7: Deploy to App Engine
     - name: Deploy to App Engine
