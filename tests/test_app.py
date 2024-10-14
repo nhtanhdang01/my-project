@@ -1,6 +1,6 @@
 # test_app.py
 import pytest
-from app import app  # Adjust the import based on your app's structure
+from ..app import app  # Adjust the import based on your app's structure
 
 def test_app():
     client = app.test_client()
