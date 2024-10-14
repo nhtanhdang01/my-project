@@ -1,4 +1,3 @@
-# test_app.py
 import pytest
 from app import app  # Adjust the import based on your app's structure
 
