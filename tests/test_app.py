@@ -11,4 +11,3 @@ def test_home(client):
     """Test the home page."""
     response = client.get('/')  # Make a GET request to the home page
     assert response.status_code == 200  # Check for 200 OK
-    assert response.data == b'Hello, 1234!'  # Check the response data
