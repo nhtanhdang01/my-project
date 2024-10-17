@@ -54,7 +54,7 @@ jobs:
         project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
         promote: false # not receive live traffic 
-        version: test-${{ github.sha }}  # Test version with unique SHA identifier
+        version: test  # Test version with unique SHA identifier
 
   # Deploy to Production 
   deploy-to-prod:
@@ -96,4 +96,4 @@ jobs:
         project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
         credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
         promote: true # promote to production
-        version: prod-${{ github.sha }}  # Production version with unique SHA identifier
+        version: prod  # Production version with unique SHA identifier
