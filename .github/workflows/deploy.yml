@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - develop
-  pull_request:
-    branches:
       - main
 
 jobs:
@@ -50,7 +48,7 @@ jobs:
           project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
           credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
           promote: false
-          version: test-${{ github.sha }}
+          version: test
 
   merge-to-main:
     needs: deploy-to-test
@@ -64,17 +62,26 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "actions@github.com"
+      - name: Fetch all branches
+        run: git fetch --all
 
-      - name: Merge develop to main
+      - name: Merge branches into master
         run: |
-          git checkout main
-          git pull origin main
-          git merge --no-ff origin/develop -m "Auto-merge develop to main after successful test deployment"
-          git push origin main
+          BRANCHES=$(git branch -r | grep -v '\->' | grep -v 'main' | sed 's/origin\///')
+          for branch in $BRANCHES; do
+            CURRENT_BRANCH=$(git branch --show-current)
+            if [ "$CURRENT_BRANCH" != "main" ]; then
+              git checkout main
+            fi
+            git pull origin main
+            if git merge --no-ff --allow-unrelated-histories origin/$branch -m "Merge branch '$branch' into main"; then
+              echo "Merge successful for branch $branch"
+              git push origin main
+            else
+              echo "Merge conflict or error occurred for branch $branch. Skipping..."
+              git merge --abort
+            fi
+          done
 
   deploy-to-prod:
     needs: merge-to-main
@@ -114,4 +121,4 @@ jobs:
           project_id: ${{ secrets.GOOGLE_PROJECT_ID }}
           credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
           promote: true
-          version: prod-${{ github.sha }}
+          version: prod
