@@ -49,6 +49,10 @@ jobs:
           credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
           promote: false
           version: test
+          
+      - name: Set deployment status
+        if: success()
+        run: echo "status=success" >> $GITHUB_OUTPUT
 
   merge-to-main:
     needs: deploy-to-test
