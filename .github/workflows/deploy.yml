@@ -55,6 +55,15 @@ jobs:
         credentials: ${{ secrets.GOOGLE_CREDENTIALS }}
         promote: false # not receive live traffic 
         version: test  # Test version with unique SHA identifier
+        
+    # Step 8: Auto-merge to main branch after successful test deployment
+    - name: Auto-merge to main branch
+      uses: "peter-evans/merge-pull-request@v4"
+      with:
+        pull-request-number: 1 # Adjust if using different pull request logic
+        merge-method: squash
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Deploy to Production 
   deploy-to-prod:
