@@ -3,6 +3,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, SWE40006'
+    return 'Hello, final pipeline'
 
 
