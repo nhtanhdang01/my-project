@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop'
     outputs:
-      deployment_status: ${{ steps.deploy.outputs.status }}
+      deployment_status: ${{ steps.set_status.outputs.status }}
     
     steps:
       - name: Checkout code
@@ -51,8 +51,11 @@ jobs:
           version: test
           
       - name: Set deployment status
+        id: set_status  
         if: success()
-        run: echo "status=success" >> $GITHUB_OUTPUT
+        run: |
+          echo "status=success" >> "$GITHUB_OUTPUT"
+          echo "Set status to success"
 
   merge-to-main:
     needs: deploy-to-test
